@@ -1,0 +1,80 @@
+body
+  margin: 0
+  padding: 0
+  box-sizing: border-box
+  background-color: #023047
+
+.container
+  display: flex
+  flex-direction: column
+  align-items: center
+  justify-content: center
+  height: 100vh
+  width: 350px
+  margin: 0 auto
+  // padding: 15px
+
+  .encrypter
+    display: flex
+    flex-direction: column
+    align-items: center
+    justify-content: center
+    gap: 15px
+    width: 300px
+    border: 1px solid #8ecae6
+    padding: 15px
+    border-radius: 8px
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+
+    .options
+      display: flex
+      gap: 15px
+      width: 100%
+      justify-content: center
+
+    .encrypted-text, .entered-text
+      width: 100%
+
+    .submit
+      display: flex
+      gap: 15px
+      width: 100%
+
+    select
+      padding: 5px 10px
+      border: none
+      border-radius: 5px
+      background-color: #8ecae6
+      color: #023047
+      font-weight: bold
+      cursor: pointer
+      transition: 0.3s ease-in-out
+
+      &:hover
+        background-color: #219ebc
+        color: #fff
+        transition: 0.3s ease-in-out
+
+    button
+      padding: 5px 10px
+      border: none
+      border-radius: 5px
+      background-color: #8ecae6
+      color: #023047
+      font-weight: bold
+      cursor: pointer
+      transition: 0.3s ease-in-out
+
+      &:hover
+        background-color: #fb8500
+        color: #fff
+        transition: 0.3s ease-in-out
+
+    textarea
+      resize: none
+      background-color: #faedcd
+      width: 100%
+.active
+  background-color: #fb8500 !important
+  color: #fff !important
+  transition: 0.3s ease-in-out
