@@ -13,8 +13,6 @@ const operations = {
   encrypt: "encrypt",
   decrypt: "decrypt",
 };
-const iv = [21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36];
-const key = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
 
 function App() {
   const [text, setText] = useState("");
@@ -42,16 +40,16 @@ function App() {
       decBtnRef.current.classList.add("active");
     }
     setOperation(value);
-    setProcessedText("");
-    setText("");
+    // setProcessedText("");
+    // setText(processedText);
   };
 
-  const handleSubmit = (mode, text) => {
+  const handleSubmit = (mode, operation, text) => {
     if (!isValid(mode, text)) return false;
 
     if (operation === operations.encrypt) encrypt(mode, text);
-    else decrypt(mode, text);  
-  }
+    else decrypt(mode, text);
+  };
   const isValid = (mode, text) => {
     if (text === "") {
       alert("Please enter text");
@@ -69,54 +67,63 @@ function App() {
     switch (mode) {
       case modes.CTR:
         console.log("CTR");
-        return new aesjs.ModeOfOperation.ctr(key, new aesjs.Counter(5));
+        return new aesjs.ModeOfOperation.ctr(JSON.parse(process.env.REACT_APP_KEY256), new aesjs.Counter(5));
       case modes.CBC:
-        return new aesjs.ModeOfOperation.cbc(key, iv);
+        return new aesjs.ModeOfOperation.cbc(JSON.parse(process.env.REACT_APP_KEY256), JSON.parse(process.env.REACT_APP_IV));
       case modes.CBF:
-        return new aesjs.ModeOfOperation.cfb(key, iv, 1);
+        return new aesjs.ModeOfOperation.cfb(JSON.parse(process.env.REACT_APP_KEY256), JSON.parse(process.env.REACT_APP_IV), 1);
       case modes.OFB:
-        return new aesjs.ModeOfOperation.ofb(key, iv);
+        return new aesjs.ModeOfOperation.ofb(JSON.parse(process.env.REACT_APP_KEY256), JSON.parse(process.env.REACT_APP_IV));
       case modes.ECB:
-        return new aesjs.ModeOfOperation.ecb(key);
+        return new aesjs.ModeOfOperation.ecb(JSON.parse(process.env.REACT_APP_KEY256));
       default:
-        return new aesjs.ModeOfOperation.ctr(key, new aesjs.Counter(5));
+        return new aesjs.ModeOfOperation.ctr(JSON.parse(process.env.REACT_APP_KEY256), new aesjs.Counter(5));
     }
   };
 
   const encrypt = (mode, text) => {
-    const textBytes = aesjs.utils.utf8.toBytes(text); // convert text to bytes
-    const encMode = returnOperationMode(mode); // return operation(enc or dec) mode
-    const encryptedBytes = encMode.encrypt(textBytes); // encrypt bytes
-    const encryptedHex = aesjs.utils.hex.fromBytes(encryptedBytes); // convert bytes to hex
-    
-    setProcessedText(encryptedHex);
-    setIsEncrypted(true);
+    try {
+      const textBytes = aesjs.utils.utf8.toBytes(text); // convert text to bytes
+      const encMode = returnOperationMode(mode); // return operation(enc or dec) mode
+      const encryptedBytes = encMode.encrypt(textBytes); // encrypt bytes
+      const encryptedHex = aesjs.utils.hex.fromBytes(encryptedBytes); // convert bytes to hex
+
+      setProcessedText(encryptedHex);
+      setIsEncrypted(true);
+    } catch (error) {
+      alert("Please enter valid text");
+    }
   };
-  
+
   const decrypt = (mode, text) => {
-    const encryptedBytes = aesjs.utils.hex.toBytes(text); // convert hex to bytes
-    const decMode = returnOperationMode(mode); // return operation(enc or dec) mode
-    const decryptedBytes = decMode.decrypt(encryptedBytes); // decrypt bytes
-    const decryptedText = aesjs.utils.utf8.fromBytes(decryptedBytes); // convert bytes to text
+    try {
+      const encryptedBytes = aesjs.utils.hex.toBytes(text); // convert hex to bytes
+      const decMode = returnOperationMode(mode); // return operation(enc or dec) mode
+      const decryptedBytes = decMode.decrypt(encryptedBytes); // decrypt bytes
+      const decryptedText = aesjs.utils.utf8.fromBytes(decryptedBytes); // convert bytes to text
 
-    setProcessedText(decryptedText);
-    setIsEncrypted(true);
+      setProcessedText(decryptedText);
+      setIsEncrypted(true);
+    } catch (error) {
+      alert("Please enter valid hex");
+    }
   };
-
-
   return (
     <div className="container">
       <div className="encrypter">
-
         <div className="options">
           <button
             className="active"
             onClick={() => handleOperation(operations.encrypt)}
-            ref={encBtnRef}>Encrypt
+            ref={encBtnRef}
+          >
+            Encrypt
           </button>
           <button
             onClick={() => handleOperation(operations.decrypt)}
-            ref={decBtnRef}>Decrypt
+            ref={decBtnRef}
+          >
+            Decrypt
           </button>
         </div>
 
@@ -138,7 +145,9 @@ function App() {
             <option value={modes.OFB}>{modes.OFB}</option>
             <option value={modes.ECB}>{modes.ECB}</option>
           </select>
-          <button onClick={() => handleSubmit(mode, text)}>{operation}</button>
+          <button onClick={() => handleSubmit(mode, operation, text)}>
+            {operation}
+          </button>
         </div>
 
         <div className="encrypted-text">
@@ -150,7 +159,6 @@ function App() {
             readOnly={true}
           />
         </div>
-
       </div>
     </div>
   );
