@@ -34,3 +34,5 @@ npm install
 ```shell
 npm start
 ```
+
+5. Open your browser and go to http://localhost:3000 to access the application.
