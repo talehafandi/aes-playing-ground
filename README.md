@@ -1,4 +1,6 @@
-# AES Playground is a web application that allows users to test encryption and decryption processes. It supports various modes of the famous encryption algorithm AES. Users can input their data and select the desired algorithm to encrypt or decrypt it.
+# AES Playground 
+
+## AES Playground is a web application that allows users to test encryption and decryption processes. It supports various modes of the famous encryption algorithm AES. Users can input their data and select the desired algorithm to encrypt or decrypt it.
 
 ## [Live Demo](https://aes-playground.netlify.app/)
 
